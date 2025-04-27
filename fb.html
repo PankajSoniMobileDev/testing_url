@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WhatsApp Embedded Signup</title>
+  
+  <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+  
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '490457739659641',   // Your App ID
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v22.0'               // Facebook API Version
+      });
+    };
+
+    function launchEmbeddedSignup() {
+      FB.login(function(response) {
+        if (response.authResponse) {
+          const code = response.authResponse.code;
+          
+          fetch('https://dev.api.pradeshtaxi.com/api/whatsapp/exchange-code/exchange-code', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Exchange code response:', data);
+          })
+          .catch(error => {
+            console.error('Error exchanging code:', error);
+          });
+          
+        } else {
+          console.log('User cancelled login or did not fully authorize.');
+        }
+      }, {
+        config_id: '103066455934072',     // Your Config ID
+        response_type: 'code',
+        override_default_response_type: true
+      });
+    }
+  </script>
+</head>
+
+<body onload="launchEmbeddedSignup();">
+</body>
+</html>
